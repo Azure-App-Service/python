@@ -1,0 +1,35 @@
+#
+upstream app {
+	server unix:///tmp/uwsgi.sock;
+}
+
+#
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/default;
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+	charset utf-8;
+	
+	location /images {
+	}
+
+	location /css {
+	}
+
+	location /js {
+	}
+
+	location /static {
+	}
+
+        location / {
+                uwsgi_pass app;
+                include /etc/nginx/uwsgi_params;
+        }
+}
+
+
