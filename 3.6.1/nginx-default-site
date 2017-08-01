@@ -5,8 +5,8 @@ upstream app {
 
 #
 server {
-	listen 80 default_server;
-	listen [::]:80 default_server;
+	listen 8080 default_server;
+	listen [::]:8080 default_server;
 
 	root /var/www/default;
 	index index.html index.htm index.nginx-debian.html;

@@ -133,5 +133,5 @@ RUN set -ex \
 
 COPY entrypoint.sh /usr/local/bin
 RUN chmod u+x /usr/local/bin/entrypoint.sh
-EXPOSE 2222 80
+EXPOSE 2222 8080
 ENTRYPOINT ["entrypoint.sh"]
