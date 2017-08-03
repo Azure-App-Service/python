@@ -25,13 +25,8 @@ This docker image enables you to:
 - connect you Python app to a remote PostgreSQL database;
 - ssh to the docker container via the URL like below;
 ```
-        https://<your sitename>.scm.azurewebsites.net/webssh/host
+        https://<your-site-name>.scm.azurewebsites.net/webssh/host
 ```
-
-## Deploying to Azure
-With the button below, you can easily deploy this image to Azure.
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 ## Predefined Nginx Locations
 This docker image defines the following nginx locations for your static files.
@@ -40,7 +35,7 @@ This docker image defines the following nginx locations for your static files.
 - /js
 - /static
 
-For more information, see [nginx default site conf](./nginx-default-site).
+For more information, see [nginx default site conf](./3.6.1/nginx-default-site).
 
 ## uWSGI INI
 This docker image contains a default uWSGI ini file which is placed under /home/uwsgi and invoked like below:
@@ -54,5 +49,17 @@ You can customeize this ini file, and upload to /home/uwsgi to overwrite.
 The startup log file (**entrypoint.log**) is placed under the folder /home/LogFiles.
 
 ## How to Deploy Django Project
-**This section is still in developing**
-
+1. login the instance via the url like below:
+```
+        https://<your-site-name>.scm.azurewebsites.net/webssh/host
+```
+2. install Django
+```
+        pip install Django==1.11.3
+```
+3. upload your Django project, for example to the location /home/site/wwwroot
+4. update /home/uwsgi/uwsgi.ini per the requirements of your project
+5. run the command below
+```
+        uwsgi --uid www-data --gid www-data –ini=/home/uwsgi/uwsgi.ini
+```
