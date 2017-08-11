@@ -6,8 +6,8 @@ log(){
 }
 
 set -e
-logfile=/var/log/docker/entrypoint.log
-test ! -f $logfile && mkdir -p /var/log/docker && touch $logfile
+logFileName="docker.log"
+logfile=$(find /home/LogFiles/ -name "$logFileName")
 exec > >(log | tee -ai $logfile)
 exec 2>&1
 
