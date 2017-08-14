@@ -1,22 +1,5 @@
 #!/bin/bash
-log(){
-	while read line ; do
-		echo "`date '+%D %T'` $line"
-	done
-}
-
 set -e
-logFileName="docker.log"
-logfile=$(find /home/LogFiles/ -name "$logFileName")
-exec > >(log | tee -ai $logfile)
-exec 2>&1
-
-set_var_if_null(){
-	local varname="$1"
-	if [ ! "${!varname:-}" ]; then
-		export "$varname"="$2"
-	fi
-}
 
 python --version
 pip --version
