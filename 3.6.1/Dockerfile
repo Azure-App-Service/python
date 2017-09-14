@@ -87,6 +87,9 @@ RUN set -ex \
 	# Microsoft Azure Client Libraries for Python
 	&& pip install azure \
 
+    # Flask
+	&& pip install Flask \
+	
 	# nginx
 	&& apt-get update \
 	&& apt-get install -y -V --no-install-recommends nginx \
