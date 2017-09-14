@@ -83,7 +83,10 @@ RUN set -ex \
 	# pip
 	&& wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate \
         && python3 get-pip.py \
-	
+
+	# Microsoft Azure Client Libraries for Python
+	&& pip install azure \
+
 	# nginx
 	&& apt-get update \
 	&& apt-get install -y -V --no-install-recommends nginx \
