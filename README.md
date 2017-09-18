@@ -6,11 +6,15 @@ This Python Docker image is built for [Azure Web App on Linux](https://docs.micr
 This Docker image contains the following components:
 
 1. Python **3.6.1**
-2. Nginx **1.10.0**
-3. uWSGI **2.0.15**
-4. Psycopg2 **2.7.1**
-5. Pip **9.0.1**
-6. SSH
+2. Requests
+3. Nginx **1.10.0**
+4. uWSGI **2.0.15**
+5. Psycopg2 **2.7.1**
+6. Pip **9.0.1**
+7. SSH
+8. Azure SDK
+9. Flask 
+10. Django  **1.11.5**
 
 Ubuntu 16.04 is used as the base image.
 
@@ -38,28 +42,31 @@ This docker image defines the following nginx locations for your static files.
 For more information, see [nginx default site conf](./3.6.1/nginx-default-site).
 
 ## uWSGI INI
-This docker image contains a default uWSGI ini file which is placed under /home/uwsgi and invoked like below:
+This docker image contains a default uWSGI ini file which is placed under /etc/uwsgi and invoked like below:
 ```
 uwsgi --uid www-data --gid www-data --ini=$UWSGI_INI_DIR/uwsgi.ini
 ```
 
-You can customeize this ini file, and upload to /home/uwsgi to overwrite.
+You can customeize this ini file, and upload to /etc/uwsgi to overwrite.
+
+This docker image also contains a uWSGI ini file for Django, which names uwsgi_django.ini. You can customeize it and uplad to /etc/uwsgi to overwrite uwsgi.ini.
 
 ## Startup Log
 The startup log file (**entrypoint.log**) is placed under the folder /home/LogFiles.
 
-## How to Deploy Django Project
+## How to Deploy Django Project 
 1. login the instance via the url like below:
 ```
         https://<your-site-name>.scm.azurewebsites.net/webssh/host
 ```
-2. install Django
+2. CD your location (For example /home/site/wwwroot), Run the command below to start a new project  (For example project name is hello), Then cd project location, update settings.py as need.
 ```
-        pip install Django==1.11.3
+        python /usr/local/bin/django-admin.py startproject hello
+```   
+3. If your django project is exist, you can just upload it, for example to the location /home/site/wwwroot.
+4. update /etc/uwsgi/uwsgi.ini per the requirements of your project. You can find a sample 
+/tmp/uwsgi_django.ini. Reference: [How to use Django with uWSGI](https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/uwsgi/)
+5. Run the command below to start uWSGI service
 ```
-3. upload your Django project, for example to the location /home/site/wwwroot
-4. update /home/uwsgi/uwsgi.ini per the requirements of your project
-5. run the command below
-```
-        uwsgi --uid www-data --gid www-data –ini=/home/uwsgi/uwsgi.ini
+        uwsgi --uid www-data --gid www-data –ini=/etc/uwsgi/uwsgi.ini
 ```
