@@ -13,6 +13,7 @@ MAINTAINER Azure App Service Container Images <appsvc-images@microsoft.com>
 ENV PYTHON_VERSION "3.6.1"
 ENV PYTHON_TAR_URL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz"
 ENV PYTHON_TAR_MD5 "692b4fc3a2ba0d54d1495d4ead5b0b5c"
+ENV REQUESTS_TAR_URL "https://github.com/requests/requests/tarball/master"
 # uwsgi
 ENV UWSGI_DIR "/etc/uwsgi"
 
@@ -91,7 +92,15 @@ RUN set -ex \
 	# Microsoft Azure Client Libraries for Python
 	&& pip install azure \
 
-        # Flask
+    # Requests
+	&& cd $DOCKER_BUILD_HOME \
+    && wget -O requests.tar.gz "$REQUESTS_TAR_URL" --no-check-certificate \
+    && mkdir -p /usr/src/requests \
+    && tar -xf requests.tar.gz -C /usr/src/requests --strip-components=1 \
+    && cd /usr/src/requests \
+    && python3 setup.py install \
+        
+    # Flask
 	&& pip install Flask \
 	
 	# nginx
@@ -104,8 +113,8 @@ RUN set -ex \
 	# psycopg2
 	&& pip install psycopg2 \
 	
-        # Django
-        && pip install Django \
+    # Django
+    && pip install Django \
  
 	# ssh
 	&& apt-get update \
@@ -134,7 +143,8 @@ RUN set -ex \
 	&& ln -s /usr/local/bin/python3.6 /usr/bin/python3 \
 	&& ln -s /usr/bin/python3 /usr/bin/python \
 	##
-	# && rm -rf $DOCKER_BUILD_HOME/* \
+	&& rm -rf $DOCKER_BUILD_HOME/* \
+        && rm -rf /usr/src/request/* \
 	##
 	&& test ! -d $UWSGI_DIR && mkdir -p $UWSGI_DIR
 
