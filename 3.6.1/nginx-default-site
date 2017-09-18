@@ -8,7 +8,7 @@ server {
 	listen 8080 default_server;
 	listen [::]:8080 default_server;
 
-	root /var/www/html;
+	root /home/site/wwwroot;
 	index index.html index.htm index.nginx-debian.html;
 
 	server_name _;

@@ -15,6 +15,10 @@ ENV PYTHON_TAR_URL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PY
 ENV PYTHON_TAR_MD5 "692b4fc3a2ba0d54d1495d4ead5b0b5c"
 # uwsgi
 ENV UWSGI_DIR "/etc/uwsgi"
+
+#Web Site Home
+ENV HOME_SITE "/home/site/wwwroot"
+
 # ssh
 ENV SSH_PASSWD "root:Docker!"
 #
@@ -87,7 +91,7 @@ RUN set -ex \
 	# Microsoft Azure Client Libraries for Python
 	&& pip install azure \
 
-    # Flask
+        # Flask
 	&& pip install Flask \
 	
 	# nginx
@@ -99,7 +103,10 @@ RUN set -ex \
 	&& pip install http://projects.unbit.it/downloads/uwsgi-lts.tar.gz \
 	# psycopg2
 	&& pip install psycopg2 \
-
+	
+        # Django
+        && pip install Django \
+ 
 	# ssh
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends openssh-server \
@@ -118,6 +125,7 @@ RUN set -ex \
 COPY nginx-default-site /etc/nginx/sites-available/default
 # uwsgi
 COPY uwsgi.ini /tmp/
+COPY uwsgi_django.ini /tmp
 COPY index.py /tmp/
 # ssh
 COPY sshd_config /etc/ssh/
@@ -126,7 +134,7 @@ RUN set -ex \
 	&& ln -s /usr/local/bin/python3.6 /usr/bin/python3 \
 	&& ln -s /usr/bin/python3 /usr/bin/python \
 	##
-	&& rm -rf $DOCKER_BUILD_HOME/* \
+	# && rm -rf $DOCKER_BUILD_HOME/* \
 	##
 	&& test ! -d $UWSGI_DIR && mkdir -p $UWSGI_DIR
 
