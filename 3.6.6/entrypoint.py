@@ -22,11 +22,13 @@ def custom_check():
 
 ## Django check: If 'wsgi.py' is provided, identify as Django. 
 def check_django():
-    wsgi_modules = glob.glob(HOME_SITE+'/**/wsgi.py', recursive=True)
-    if len(wsgi_modules)==0:
-        return None
-    else:
-        return wsgi_modules[0][1:-3].replace('/','.')
+    with os.scandir(HOME_SITE) as siteRoot:
+        for entry in siteRoot:
+            if not entry.name.startswith('antenv3.6') and entry.is_dir():
+                print(entry.name)
+                with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
+                    for subEntry in subFolder:
+                        if subEntry.name == 'wsgi.py' and subEntry.is_file():                                                                                                                            return entry.name + '.wsgi'
     return None
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
@@ -39,8 +41,6 @@ def check_flask():
         if module[-14:] == 'application.py':
             print ('found flask app')
             return 'application:app'
-
-    return py_modules[0][len(HOME_SITE)+1:-3].replace('/','.')+':app'
 
 def start_server():
     
@@ -55,7 +55,7 @@ def start_server():
     if cmd is not None:
         subprocess_cmd('. antenv3.6/bin/activate')
         subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn mysite.wsgi:application'
+                'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
                )
 
     cmd = check_flask()
