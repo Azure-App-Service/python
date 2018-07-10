@@ -1,1 +1,1 @@
-docker build --tag appsvctest/python:3.7 --file ./Dockerfile .
+docker build --tag jennylawrance/python:3.7 --file ./Dockerfile .
