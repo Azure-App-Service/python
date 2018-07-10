@@ -8,7 +8,7 @@ STARTUP_COMMAND_FILE="/opt/startup/startupCommand"
 APPSVC_VIRTUAL_ENV="antenv"
 
 # Temp patch. Remove when Kudu script is available.
-os.environ["PYTHONPATH"] = HOME_SITE + "/antenv/lib/python3.6/site-packages"
+os.environ["PYTHONPATH"] = HOME_SITE + "/antenv/lib/python3.7/site-packages"
 
 def subprocess_cmd(command):
     print ('executing:')
