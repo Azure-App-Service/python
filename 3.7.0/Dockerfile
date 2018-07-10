@@ -1,4 +1,4 @@
-FROM python:3.6.6-slim-stretch
+FROM python:3.7.0-slim-stretch
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
