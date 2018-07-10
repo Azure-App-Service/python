@@ -23,6 +23,9 @@ service ssh start
 # Get environment variables to show up in SSH session
 eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 
+echo "$@" > /opt/startup/startupCommand
+chmod 755 /opt/startup/startupCommand
+
 echo "Running python /usr/local/bin/entrypoint.py"
 
 eval "exec python /usr/local/bin/entrypoint.py"
