@@ -5,9 +5,10 @@ import os
 HOME_SITE="/home/site/wwwroot"
 DEFAULT_SITE="/opt/defaultsite"
 STARTUP_COMMAND_FILE="/opt/startup/startupCommand"
+APPSVC_VIRTUAL_ENV="antenv"
 
 # Temp patch. Remove when Kudu script is available.
-os.environ["PYTHONPATH"] = HOME_SITE + "/antenv3.6/lib/python3.6/site-packages"
+os.environ["PYTHONPATH"] = HOME_SITE + "/antenv/lib/python3.6/site-packages"
 
 def subprocess_cmd(command):
     print ('executing:')
@@ -30,7 +31,7 @@ def custom_check():
 def check_django():
     with os.scandir(HOME_SITE) as siteRoot:
         for entry in siteRoot:
-            if not entry.name.startswith('antenv3.6') and entry.is_dir():
+            if not entry.name.startswith(APPSVC_VIRTUAL_ENV) and entry.is_dir():
                 print(entry.name)
                 with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
                     for subEntry in subFolder:
@@ -53,21 +54,21 @@ def start_server():
     
     cmd = custom_check()
     if cmd is not None: 
-        subprocess_cmd('. antenv3.6/bin/activate')
+        subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
                )
 
     cmd = check_django()
     if cmd is not None:
-        subprocess_cmd('. antenv3.6/bin/activate')
+        subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
                )
 
     cmd = check_flask()
     if cmd is not None:
-        subprocess_cmd('. antenv3.6/bin/activate')
+        subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
                )
