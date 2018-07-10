@@ -28,7 +28,8 @@ def check_django():
                 print(entry.name)
                 with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
                     for subEntry in subFolder:
-                        if subEntry.name == 'wsgi.py' and subEntry.is_file():                                                                                                                            return entry.name + '.wsgi'
+                        if subEntry.name == 'wsgi.py' and subEntry.is_file():
+                            return entry.name + '.wsgi'
     return None
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
