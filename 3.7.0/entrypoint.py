@@ -45,6 +45,8 @@ def custom_check():
               else:
                   print('invalid data in startup script, ignoring it.')
                   return None
+                
+              return startupScript
 
 ## Django check: If 'wsgi.py' is provided, identify as Django. 
 def check_django():
@@ -108,5 +110,3 @@ def start_server():
 subprocess_cmd('python --version')
 subprocess_cmd('pip --version')
 start_server()
-
-
