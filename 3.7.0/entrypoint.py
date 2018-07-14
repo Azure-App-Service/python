@@ -25,7 +25,26 @@ def custom_check():
           if not startupScript:
               return None
           else:
-              return startupScript
+              if ".." not in startupScript:
+                  startupFilePath = HOME_SITE + '/' + startupScript.rstrip()
+                  print('startup script: ' + startupFilePath)
+                  try:
+                      startupFile = open(startupFilePath, 'r')
+                      print ('identified startup script as a file on disk')
+                      startArgs = startupFile.read()
+                      print(startArgs)
+                      if not startArgs:
+                          return None
+                      else:
+                          return startArgs
+
+                  except:
+                      # appCommandLine is not a file, assume it is the script to be started bu gunicorn
+                      print('startup script is not a file, use it as gunicorn arg')
+                      return startupScript
+              else:
+                  print('invalid data in startup script, ignoring it.')
+                  return None
 
 ## Django check: If 'wsgi.py' is provided, identify as Django. 
 def check_django():
@@ -53,7 +72,8 @@ def check_flask():
 def start_server():
     
     cmd = custom_check()
-    if cmd is not None: 
+    if cmd is not None:
+        print('custom startup found: ' + cmd);
         subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
