@@ -75,7 +75,14 @@ def start_server():
     if cmd is not None:
         print('custom startup found: ' + cmd);
         subprocess_cmd('. antenv/bin/activate')
-        subprocess_cmd(
+        if 'python' in cmd:
+            subprocess_cmd(cmd)
+
+        elif 'gunicorn' in cmd:
+            subprocess_cmd(cmd)
+
+        else:
+            subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
                )
 
