@@ -21,12 +21,12 @@ def subprocess_cmd(command):
 ## Check for custom startup command
 def custom_check():
     with open(STARTUP_COMMAND_FILE, 'r') as myfile:
-          startupScript = myfile.read()
+          startupScript = myfile.read().rstrip()
           if not startupScript:
               return None
           else:
               if ".." not in startupScript:
-                  startupFilePath = HOME_SITE + '/' + startupScript.rstrip()
+                  startupFilePath = HOME_SITE + '/' + startupScript
                   print('startup script: ' + startupFilePath)
                   try:
                       startupFile = open(startupFilePath, 'r')
