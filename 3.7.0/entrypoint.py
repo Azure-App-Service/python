@@ -1,5 +1,4 @@
 import subprocess
-import glob
 import os
 
 HOME_SITE="/home/site/wwwroot"
@@ -62,14 +61,11 @@ def check_django():
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
 def check_flask():
-    
-    py_modules = glob.glob(HOME_SITE+'/*.py')
-    if len(py_modules) == 0:
-        return None
-    for module in py_modules: 
-        if module[-14:] == 'application.py':
-            print ('found flask app')
-            return 'application:app'
+    with os.scandir(HOME_SITE) as siteRoot:
+         if any("appication.py" == entry.name for entry in siteRoot if entry.is_file()):
+              print("found flask app")
+              return "application:app"
+
 
 def start_server():
     
@@ -85,21 +81,21 @@ def start_server():
 
         else:
             subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
+                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
 
     cmd = check_django()
     if cmd is not None:
         subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
+                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
 
     cmd = check_flask()
     if cmd is not None:
         subprocess_cmd('. antenv/bin/activate')
         subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0" gunicorn ' + cmd
+                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
     else:          
         print('starting default app')
