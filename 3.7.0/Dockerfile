@@ -5,7 +5,15 @@ LABEL maintainer="appsvc-images@microsoft.com"
 ENV HOME_SITE "/home/site/wwwroot"
 
 #Install system dependencies
-RUN pip install --upgrade pip \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libpq-dev \
+        openssh-server \
+        vim \
+        curl \
+        wget \
+        tcptraceroute \
+    && pip install --upgrade pip \
     && pip install subprocess32 \
     && pip install gunicorn \ 
     && pip install virtualenv \
@@ -17,9 +25,7 @@ EXPOSE 8000
 # setup SSH
 RUN mkdir -p /home/LogFiles \
      && echo "root:Docker!" | chpasswd \
-     && echo "cd /home" >> /etc/bash.bashrc \
-     && apt update \
-     && apt install -y --no-install-recommends openssh-server vim curl wget tcptraceroute
+     && echo "cd /home" >> /etc/bash.bashrc 
 
 COPY sshd_config /etc/ssh/
 RUN mkdir -p /opt/startup
