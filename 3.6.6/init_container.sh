@@ -28,4 +28,4 @@ chmod 755 /opt/startup/startupCommand
 
 echo "Running python /usr/local/bin/entrypoint.py"
 
-eval "exec python /usr/local/bin/entrypoint.py"
+eval "exec python -u /usr/local/bin/entrypoint.py"
