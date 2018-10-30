@@ -1,4 +1,4 @@
-FROM python:3.7.0-slim-stretch
+FROM oryxprod/python-3.7:20181025.5
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
