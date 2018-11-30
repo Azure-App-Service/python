@@ -7,30 +7,18 @@ ENV HOME_SITE "/home/site/wwwroot"
 #Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        libpng-dev \
-        libjpeg-dev \
-        libpq-dev \
-        libmcrypt-dev \
-        libldap2-dev \
-        libldb-dev \
-        libicu-dev \
-        libgmp-dev \
-        libmagickwand-dev \
-        libc-client-dev \
-        libtidy-dev \
-        libkrb5-dev \
-        libxslt-dev \
-        unixodbc-dev \
         openssh-server \
         vim \
         curl \
         wget \
+        build-essential \
         tcptraceroute \
     && pip install --upgrade pip \
     && pip install subprocess32 \
     && pip install gunicorn \ 
     && pip install virtualenv \
-    && pip install flask 
+    && pip install flask \
+    && pip install scandir 
 
 WORKDIR ${HOME_SITE}
 

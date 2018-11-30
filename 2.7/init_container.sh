@@ -12,7 +12,6 @@ cat >/etc/motd <<EOL
 A P P   S E R V I C E   O N   L I N U X
 
 Documentation: http://aka.ms/webapp-linux
-NodeJS quickstart: https://aka.ms/node-qs
 
 EOL
 cat /etc/motd
@@ -28,4 +27,4 @@ chmod 755 /opt/startup/startupCommand
 
 echo "Running python /usr/local/bin/entrypoint.py"
 
-eval "exec python /usr/local/bin/entrypoint.py"
+eval "exec python -u /usr/local/bin/entrypoint.py"

@@ -1,5 +1,6 @@
 import subprocess
 import os
+import scandir
 
 HOME_SITE="/home/site/wwwroot"
 DEFAULT_SITE="/opt/defaultsite"
@@ -48,27 +49,40 @@ def custom_check():
               return startupScript
 
 ## Django check: If 'wsgi.py' is provided, identify as Django. 
+## Django check: If 'wsgi.py' is provided, identify as Django.
 def check_django():
-    with os.scandir(HOME_SITE) as siteRoot:
+    print("Checking for django app in site's content folder:")
+
+    try:
+        siteRoot = scandir.scandir(HOME_SITE)
         for entry in siteRoot:
             if not entry.name.startswith(APPSVC_VIRTUAL_ENV) and entry.is_dir():
-                print(entry.name)
-                with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
-                    for subEntry in subFolder:
-                        if subEntry.name == 'wsgi.py' and subEntry.is_file():
-                            return entry.name + '.wsgi'
-    return None
+                print("Detected directory: '" + entry.name + "'")
+                subFolder = scandir.scandir(HOME_SITE + '/'+ entry.name)
+                for subEntry in subFolder:
+                    if subEntry.name == 'wsgi.py' and subEntry.is_file():
+                        print("Found wsgi.py in directory '" + entry.name +  "', django app detection success")
+                        return entry.name + '.wsgi'
+    finally:
+        print("django test returned ")
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
 def check_flask():
-    with os.scandir(HOME_SITE) as siteRoot:
-         if any("appication.py" == entry.name for entry in siteRoot if entry.is_file()):
-              print("found flask app")
-              return "application:app"
+    print("Checking for flask app in site's content folder:")
+
+    try:
+        siteRoot = scandir.scandir(HOME_SITE)
+        for entry in siteRoot:
+            if entry.is_file() and (entry.name == "application.py" or entry.name == "app.py"):
+                print("found app '" + entry.name + "' in root folder, flask app detection success")
+                return entry.name[:-3] + ":app"
+
+        return None
+    finally:
+        print("flask test returned")
 
 
 def start_server():
-    
     cmd = custom_check()
     if cmd is not None:
         print('custom startup found: ' + cmd);
@@ -86,6 +100,7 @@ def start_server():
 
     cmd = check_django()
     if cmd is not None:
+        print(cmd)
         subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
@@ -93,6 +108,7 @@ def start_server():
 
     cmd = check_flask()
     if cmd is not None:
+        print(cmd)
         subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
