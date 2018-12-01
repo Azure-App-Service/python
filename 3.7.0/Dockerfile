@@ -1,4 +1,4 @@
-FROM oryxprod/python-3.7:20181025.5
+FROM oryxprod/python-3.7:20181112.1
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
@@ -7,7 +7,6 @@ ENV HOME_SITE "/home/site/wwwroot"
 #Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        libpq-dev \
         openssh-server \
         vim \
         curl \
