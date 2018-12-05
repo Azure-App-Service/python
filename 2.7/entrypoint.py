@@ -1,5 +1,6 @@
 import subprocess
 import os
+import scandir
 
 HOME_SITE="/home/site/wwwroot"
 DEFAULT_SITE="/opt/defaultsite"
@@ -7,7 +8,7 @@ STARTUP_COMMAND_FILE="/opt/startup/startupCommand"
 APPSVC_VIRTUAL_ENV="antenv"
 
 # Temp patch. Remove when Kudu script is available.
-os.environ["PYTHONPATH"] = HOME_SITE + "/antenv3.6/lib/python3.6/site-packages"
+os.environ["PYTHONPATH"] = HOME_SITE + "/antenv2.7/lib/python2.7/site-packages"
 
 def subprocess_cmd(command):
     print ('executing:')
@@ -48,37 +49,44 @@ def custom_check():
               return startupScript
 
 ## Django check: If 'wsgi.py' is provided, identify as Django. 
+## Django check: If 'wsgi.py' is provided, identify as Django.
 def check_django():
-    with os.scandir(HOME_SITE) as siteRoot:
+    print("Checking for django app in site's content folder:")
+
+    try:
+        siteRoot = scandir.scandir(HOME_SITE)
         for entry in siteRoot:
             if not entry.name.startswith(APPSVC_VIRTUAL_ENV) and entry.is_dir():
-                with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
-                    for subEntry in subFolder:
-                        if subEntry.name == 'wsgi.py' and subEntry.is_file():
-                            print ("found django app")
-                            return entry.name + '.wsgi'
-    return None
+                print("Detected directory: '" + entry.name + "'")
+                subFolder = scandir.scandir(HOME_SITE + '/'+ entry.name)
+                for subEntry in subFolder:
+                    if subEntry.name == 'wsgi.py' and subEntry.is_file():
+                        print("Found wsgi.py in directory '" + entry.name +  "', django app detection success")
+                        return entry.name + '.wsgi'
+    finally:
+        print("django test returned ")
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
 def check_flask():
-   with os.scandir(HOME_SITE) as siteRoot:
-       for entry in siteRoot:
-           if entry.is_file():
-               if (entry.name == 'application.py'):
-                   print("found flask app")
-                   return "application:app"
-               else:
-                   if (entry.name == 'app.py'):
-                       print("found flask app")
-                       return "app:app"
-   return None
+    print("Checking for flask app in site's content folder:")
+
+    try:
+        siteRoot = scandir.scandir(HOME_SITE)
+        for entry in siteRoot:
+            if entry.is_file() and (entry.name == "application.py" or entry.name == "app.py"):
+                print("found app '" + entry.name + "' in root folder, flask app detection success")
+                return entry.name[:-3] + ":app"
+
+        return None
+    finally:
+        print("flask test returned")
+
 
 def start_server():
-    
     cmd = custom_check()
     if cmd is not None:
         print('custom startup found: ' + cmd);
-        subprocess_cmd('. antenv3.6/bin/activate')
+        subprocess_cmd('. antenv2.7/bin/activate')
         if 'python' in cmd:
             subprocess_cmd(cmd)
 
@@ -89,30 +97,27 @@ def start_server():
             subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
-        return
 
     cmd = check_django()
     if cmd is not None:
-        subprocess_cmd('. antenv3.6/bin/activate')
+        print(cmd)
+        subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
-        return
 
     cmd = check_flask()
     if cmd is not None:
-        subprocess_cmd('. antenv3.6/bin/activate')
+        print(cmd)
+        subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
-        return
-
     else:          
         print('starting default app')
         subprocess_cmd(
               'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --chdir /opt/defaultsite" gunicorn application:app'
-              )
-        return
+              )    
 
 subprocess_cmd('python --version')
 subprocess_cmd('pip --version')
