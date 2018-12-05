@@ -71,6 +71,7 @@ def check_flask():
                    if (entry.name == 'app.py'):
                        print("found flask app")
                        return "app:app"
+
    return None
 
 def start_server():
