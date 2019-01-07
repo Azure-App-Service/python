@@ -7,7 +7,6 @@ ENV HOME_SITE "/home/site/wwwroot"
 #Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        libpq-dev \
         openssh-server \
         vim \
         curl \
