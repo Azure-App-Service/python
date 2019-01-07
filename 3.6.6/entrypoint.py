@@ -52,20 +52,26 @@ def check_django():
     with os.scandir(HOME_SITE) as siteRoot:
         for entry in siteRoot:
             if not entry.name.startswith(APPSVC_VIRTUAL_ENV) and entry.is_dir():
-                print(entry.name)
                 with os.scandir(HOME_SITE + '/'+ entry.name) as subFolder:
                     for subEntry in subFolder:
                         if subEntry.name == 'wsgi.py' and subEntry.is_file():
+                            print ("found django app")
                             return entry.name + '.wsgi'
     return None
 
 ## Flask check: If 'application.py' is provided or a .py module is present, identify as Flask.
 def check_flask():
-    with os.scandir(HOME_SITE) as siteRoot:
-         if any("appication.py" == entry.name for entry in siteRoot if entry.is_file()):
-              print("found flask app")
-              return "application:app"
-
+   with os.scandir(HOME_SITE) as siteRoot:
+       for entry in siteRoot:
+           if entry.is_file():
+               if (entry.name == 'application.py'):
+                   print("found flask app")
+                   return "application:app"
+               else:
+                   if (entry.name == 'app.py'):
+                       print("found flask app")
+                       return "app:app"
+   return None
 
 def start_server():
     
@@ -83,6 +89,7 @@ def start_server():
             subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
+        return
 
     cmd = check_django()
     if cmd is not None:
@@ -90,6 +97,7 @@ def start_server():
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
+        return
 
     cmd = check_flask()
     if cmd is not None:
@@ -97,11 +105,14 @@ def start_server():
         subprocess_cmd(
                 'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
                )
+        return
+
     else:          
         print('starting default app')
         subprocess_cmd(
               'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --chdir /opt/defaultsite" gunicorn application:app'
-              )    
+              )
+        return
 
 subprocess_cmd('python --version')
 subprocess_cmd('pip --version')
