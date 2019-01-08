@@ -11,7 +11,7 @@ RUN apt-get update \
         vim \
         curl \
         wget \
-        build-essential \
+#        build-essential \
         tcptraceroute \
     && pip install --upgrade pip \
     && pip install gunicorn \ 
