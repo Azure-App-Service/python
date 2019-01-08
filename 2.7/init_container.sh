@@ -22,9 +22,18 @@ service ssh start
 # Get environment variables to show up in SSH session
 eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 
+STARTUPCOMMAND = "$@"
+
 echo "$@" > /opt/startup/startupCommand
-chmod 755 /opt/startup/startupCommand
 
-echo "Running python /usr/local/bin/entrypoint.py"
+FILE = "$@"
+if [ -f $FILE ]; then
+    STARTUPCOMMAND = "$(cat $FILE)"
+fi
 
-eval "exec python -u /usr/local/bin/entrypoint.py"
+#invoke oryx to generate startup script
+oryx -appPath /home/site/wwwroot -userStartupCommand $STARTUPCOMMAND -output /opt/startup/startup.sh -virtualEnvName antenv2.7
+chmod 777 /opt/startup/startup.sh
+
+#launch startup script
+/opt/startup/startup.sh

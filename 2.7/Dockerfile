@@ -14,7 +14,6 @@ RUN apt-get update \
         build-essential \
         tcptraceroute \
     && pip install --upgrade pip \
-    && pip install subprocess32 \
     && pip install gunicorn \ 
     && pip install virtualenv \
     && pip install flask \
