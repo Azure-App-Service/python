@@ -1,4 +1,4 @@
-FROM oryxprod/python-3.7:20190103.1
+FROM oryxprod/python-3.7:20190109.2
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
