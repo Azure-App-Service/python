@@ -47,12 +47,12 @@ else
                 echo "$1 file exists on disk, reading its contents to run as startup arguments"
                 fileContents=$(head -1 $1)
                 echo "Contents of startupScript: $fileContents"
-                oryxArgs+=' -userStartupCommand $fileContents'
+                oryxArgs+=" -userStartupCommand '$fileContents'"
             else
-                oryxArgs+=' -userStartupCommand $1'
+                oryxArgs+=" -userStartupCommand '$1'"
             fi
         else
-           oryxArgs+=" -userStartupCommand $@"
+           oryxArgs+=" -userStartupCommand '$@'"
         fi
     fi
 
