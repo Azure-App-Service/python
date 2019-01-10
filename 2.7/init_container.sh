@@ -30,7 +30,7 @@ chmod 755 /opt/startup/startupCommand
 
 #oryx startup script generator
 
-if [ -d /home/site/wwwroot/antenv2.7 ]; then
+if [ -d /home/site/wwwroot/antenv2.7 -a ! -d /home/site/wwwroot/__oryx_packages__ ]; then
     echo 'Virtual Environment present:'
     echo "Running python /usr/local/bin/entrypoint.py"
     eval "exec python -u /usr/local/bin/entrypoint.py"
