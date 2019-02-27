@@ -1,4 +1,4 @@
-FROM oryxprod/python-2.7:20181112.1
+FROM oryxprod/python-2.7:20190109.2
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
@@ -11,10 +11,9 @@ RUN apt-get update \
         vim \
         curl \
         wget \
-        build-essential \
+#        build-essential \
         tcptraceroute \
     && pip install --upgrade pip \
-    && pip install subprocess32 \
     && pip install gunicorn \ 
     && pip install virtualenv \
     && pip install flask \

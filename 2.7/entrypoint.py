@@ -95,7 +95,7 @@ def start_server():
 
         else:
             subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
+                'gunicorn --bind=0.0.0.0 --timeout 600 ' + cmd
                )
 
     cmd = check_django()
@@ -103,7 +103,7 @@ def start_server():
         print(cmd)
         subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
+                'gunicorn --bind=0.0.0.0 --timeout 600 ' + cmd
                )
 
     cmd = check_flask()
@@ -111,13 +111,13 @@ def start_server():
         print(cmd)
         subprocess_cmd('. antenv2.7/bin/activate')
         subprocess_cmd(
-                'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --timeout 600" gunicorn ' + cmd
+                'gunicorn --bind=0.0.0.0 --timeout 600 ' + cmd
                )
     else:          
         print('starting default app')
         subprocess_cmd(
-              'GUNICORN_CMD_ARGS="--bind=0.0.0.0 --chdir /opt/defaultsite" gunicorn application:app'
-              )    
+                'gunicorn --bind=0.0.0.0 --timeout 600 --chdir /opt/defaultsite application:app'
+              )
 
 subprocess_cmd('python --version')
 subprocess_cmd('pip --version')
