@@ -16,6 +16,7 @@ Documentation: http://aka.ms/webapp-linux
 EOL
 cat /etc/motd
 
+sed -i "s/SSH_PORT/$SSH_PORT/g" /etc/ssh/sshd_config
 service ssh start
 
 # Get environment variables to show up in SSH session
