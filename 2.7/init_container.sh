@@ -45,11 +45,20 @@ else
         if [ $# -eq 1 ]; then
             echo "Checking of $1 is a file"
             if [ -f $1 ]; then
-                echo "$1 file exists on disk, reading its contents to run as startup arguments"
+                echo 'App command line is a file on disk'
                 fileContents=$(head -1 $1)
-                echo "Contents of startupScript: $fileContents"
-                oryxArgs+=" -userStartupCommand '$fileContents'"
+                #if the file ends with, check if this is a script (first two chars of the file)
+                if [ ${1: -3} == ".sh" ]; then
+                    echo 'App command line is a shell script, will execute this script as startup script'
+                    chmod +x $1
+                    oryxArgs+=" -userStartupCommand $1"
+                else
+                    echo "$1 file exists on disk, reading its contents to run as startup arguments"
+                    echo "Contents of startupScript: $fileContents"
+                    oryxArgs+=" -userStartupCommand '$fileContents'"
+                fi
             else
+                echo 'App command line is not a file on disk, using it as the startup command.'
                 oryxArgs+=" -userStartupCommand '$1'"
             fi
         else
