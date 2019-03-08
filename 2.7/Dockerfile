@@ -1,4 +1,4 @@
-FROM oryxprod/python-2.7:20190109.2
+FROM oryxprod/python-2.7:20190223.1
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
@@ -22,6 +22,9 @@ RUN apt-get update \
 WORKDIR ${HOME_SITE}
 
 EXPOSE 8000
+ENV PORT 8000
+ENV SSH_PORT 2222
+
 # setup SSH
 RUN mkdir -p /home/LogFiles \
      && echo "root:Docker!" | chpasswd \
