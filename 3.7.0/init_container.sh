@@ -16,6 +16,7 @@ Documentation: http://aka.ms/webapp-linux
 EOL
 cat /etc/motd
 
+sed -i "s/SSH_PORT/$SSH_PORT/g" /etc/ssh/sshd_config
 service ssh start
 
 
@@ -25,45 +26,42 @@ eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 echo "$@" > /opt/startup/startupCommand
 chmod 755 /opt/startup/startupCommand
 
-
-#echo "Running python /usr/local/bin/entrypoint.py"
-#eval "exec python -u /usr/local/bin/entrypoint.py"
-
 #oryx startup script generator
 
-if [ -d /home/site/wwwroot/antenv -a ! -d /home/site/wwwroot/__oryx_packages__ ]; then
-    echo 'Virtual Environment present:'
-    echo "Running python /usr/local/bin/entrypoint.py"
-    eval "exec python -u /usr/local/bin/entrypoint.py"
+oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite'
+if [ $# -eq 0 ]; then
+    echo 'App Command Line not configured, will attempt auto-detect'
 else
-    echo 'Virtual Environment not detected, running oryx startup:'
-    oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite'
-    if [ $# -eq 0 ]; then
-        echo 'App Command Line not configured, will attempt auto-detect'
-    else
-        echo "Site's appCommandLine: $@" 
-        if [ $# -eq 1 ]; then
-            echo "Checking of $1 is a file"
-            if [ -f $1 ]; then
-                echo "$1 file exists on disk, reading its contents to run as startup arguments"
-                fileContents=$(head -1 $1)
-                echo "Contents of startupScript: $fileContents"
-
-                oryxArgs+=" -userStartupCommand '$fileContents'"
+    echo "Site's appCommandLine: $@" 
+    if [ $# -eq 1 ]; then
+        echo "Checking of $1 is a file"
+        if [ -f $1 ]; then
+            echo 'App command line is a file on disk'
+            fileContents=$(head -1 $1)
+            #if the file ends with .sh
+            if [ ${1: -3} == ".sh" ]; then
+                echo 'App command line is a shell script, will execute this script as startup script'
+                chmod +x $1
+                oryxArgs+=" -userStartupCommand $1"
             else
-                oryxArgs+=" -userStartupCommand '$1'"
+                echo "$1 file exists on disk, reading its contents to run as startup arguments"
+            echo "Contents of startupScript: $fileContents"
+            oryxArgs+=" -userStartupCommand '$fileContents'"
             fi
         else
-           oryxArgs+=" -userStartupCommand '$@'"
+            echo 'App command line is not a file on disk, using it as the startup command.'
+            oryxArgs+=" -userStartupCommand '$1'"
         fi
+    else
+       oryxArgs+=" -userStartupCommand '$@'"
     fi
-
-    echo "Launching oryx with: $oryxArgs"
-    #invoke oryx to generate startup script
-    eval "oryx $oryxArgs"
-    chmod +x /opt/startup/startup.sh
-    #launch startup script
-    /opt/startup/startup.sh 
 fi
+
+echo "Launching oryx with: $oryxArgs"
+#invoke oryx to generate startup script
+eval "oryx $oryxArgs"
+chmod +x /opt/startup/startup.sh
+#launch startup script
+/opt/startup/startup.sh 
 
 
