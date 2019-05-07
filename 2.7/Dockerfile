@@ -1,4 +1,4 @@
-FROM oryxprod/python-2.7:20190401.5
+FROM oryxprod/python-2.7:20190223.1
 LABEL maintainer="appsvc-images@microsoft.com"
 
 # Web Site Home
@@ -7,13 +7,15 @@ ENV HOME_SITE "/home/site/wwwroot"
 #Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+        libpq-dev \
         openssh-server \
         vim \
         curl \
         wget \
-#        build-essential \
+        build-essential \
         tcptraceroute \
     && pip install --upgrade pip \
+    && pip install subprocess32 \
     && pip install gunicorn \ 
     && pip install virtualenv \
     && pip install flask \
@@ -22,9 +24,6 @@ RUN apt-get update \
 WORKDIR ${HOME_SITE}
 
 EXPOSE 8000
-ENV PORT 8000
-ENV SSH_PORT 2222
-
 # setup SSH
 RUN mkdir -p /home/LogFiles \
      && echo "root:Docker!" | chpasswd \

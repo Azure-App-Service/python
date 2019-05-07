@@ -16,48 +16,15 @@ Documentation: http://aka.ms/webapp-linux
 EOL
 cat /etc/motd
 
-sed -i "s/SSH_PORT/$SSH_PORT/g" /etc/ssh/sshd_config
 service ssh start
+
 
 # Get environment variables to show up in SSH session
 eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 
 echo "$@" > /opt/startup/startupCommand
 chmod 755 /opt/startup/startupCommand
- 
-oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv2.7 -defaultApp /opt/defaultsite'
-if [ $# -eq 0 ]; then
-    echo 'App Command Line not configured, will attempt auto-detect'
-else
-    echo "Site's appCommandLine: $@" 
-    if [ $# -eq 1 ]; then
-        echo "Checking of $1 is a file"
-        if [ -f $1 ]; then
-            echo 'App command line is a file on disk'
-            fileContents=$(head -1 $1)
-            #if the file ends with, check if this is a script (first two chars of the file)
-            if [ ${1: -3} == ".sh" ]; then
-                echo 'App command line is a shell script, will execute this script as startup script'
-                chmod +x $1
-                oryxArgs+=" -userStartupCommand $1"
-            else
-                echo "$1 file exists on disk, reading its contents to run as startup arguments"
-                echo "Contents of startupScript: $fileContents"
-                oryxArgs+=" -userStartupCommand '$fileContents'"
-            fi
-        else
-            echo 'App command line is not a file on disk, using it as the startup command.'
-            oryxArgs+=" -userStartupCommand '$1'"
-        fi
-    else
-       oryxArgs+=" -userStartupCommand '$@'"
-    fi
-fi
 
-echo "Launching oryx with: $oryxArgs"
-#invoke oryx to generate startup script
-eval "oryx $oryxArgs"
-chmod +x /opt/startup/startup.sh
-#launch startup script
-/opt/startup/startup.sh 
+echo "Running python /usr/local/bin/entrypoint.py"
 
+eval "exec python -u /usr/local/bin/entrypoint.py"
