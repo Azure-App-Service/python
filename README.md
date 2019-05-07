@@ -49,7 +49,7 @@ uwsgi --uid www-data --gid www-data --ini=$UWSGI_INI_DIR/uwsgi.ini
 
 You can customeize this ini file, and upload to /etc/uwsgi to overwrite.
 
-This docker image also contains a uWSGI ini file for Django, which names uwsgi_django.ini. You can customeize it and upload to /etc/uwsgi to overwrite uwsgi.ini.
+This docker image also contains a uWSGI ini file for Django, which names uwsgi_django.ini. You can customeize it and uplad to /etc/uwsgi to overwrite uwsgi.ini.
 
 ## Startup Log
 The startup log file (**entrypoint.log**) is placed under the folder /home/LogFiles.
