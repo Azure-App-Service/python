@@ -25,7 +25,7 @@ eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
 echo "$@" > /opt/startup/startupCommand
 chmod 755 /opt/startup/startupCommand
  
-oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv2.7 -defaultApp /opt/defaultsite'
+oryxArgs="-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv2.7 -defaultApp /opt/defaultsite -bindPort $PORT"
 if [ $# -eq 0 ]; then
     echo 'App Command Line not configured, will attempt auto-detect'
 else
