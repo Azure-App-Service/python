@@ -28,7 +28,7 @@ chmod 755 /opt/startup/startupCommand
 
 #oryx startup script generator
 
-oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite'
+oryxArgs="-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -bindPort $PORT"
 if [ $# -eq 0 ]; then
     echo 'App Command Line not configured, will attempt auto-detect'
 else
