@@ -1,5 +1,5 @@
 
 
 ---------------------------
-* [ ] Are these changes auto-generated from [python-templates](https://github.com/Azure-App-Service/python-templates)
-* [ ] Have you made the same changes to [python-templates](https://github.com/Azure-App-Service/python-templates)
+* [ ] Are these changes auto-generated from [python-template](https://github.com/Azure-App-Service/python-template)
+* [ ] Have you made the same changes to [python-template](https://github.com/Azure-App-Service/python-template)
