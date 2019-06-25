@@ -21,14 +21,14 @@ service ssh start
 
 
 # Get environment variables to show up in SSH session
-eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
+eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' >> /etc/profile)
 
 echo "$@" > /opt/startup/startupCommand
 chmod 755 /opt/startup/startupCommand
 
 #oryx startup script generator
 
-oryxArgs="-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite -bindPort $PORT"
+oryxArgs='-appPath /home/site/wwwroot -output /opt/startup/startup.sh -virtualEnvName antenv -defaultApp /opt/defaultsite'
 if [ $# -eq 0 ]; then
     echo 'App Command Line not configured, will attempt auto-detect'
 else
