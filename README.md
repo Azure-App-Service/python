@@ -70,3 +70,23 @@ The startup log file (**entrypoint.log**) is placed under the folder /home/LogFi
 ```
         uwsgi --uid www-data --gid www-data –ini=/etc/uwsgi/uwsgi.ini
 ```
+
+
+
+##BuildKit Improvements
+
+Docker Engine 18.09 also includes the option to leverage BuildKit. This is a new Build architecture that improves performance, storage management, and extensibility while also adding some great new features:
+
+    Performance improvements: BuildKit includes a re-designed concurrency and caching model that makes it much faster, more precise and portable. When tested against the github.com/moby/moby Dockerfile, we saw 2x to 9.5x faster builds. This new implementation also supports these new operational models:
+        Parallel build stages
+        Skip unused stages and unused context files
+        Incremental context transfer between builds
+
+    Build-time secrets: Integrate secrets in your Dockerfile and pass them along in a safe way.  These secrets do not end up stored in the final image nor are they included in the build cache calculations to avoid anyone from using the cache metadata to reconstruct the secret.
+    SSH forwarding: Connect to private repositories by forwarding your existing SSH agent connection or a key to the builder instead of transferring the key data.
+    Build cache pruning and configurable garbage collection: Build cache can be managed separately from images and cleaned up with a new command ‘docker builder prune`. You can also set policies around when to clear build caches.
+    Extensibility: Create extensions for Dockerfile parsing by using the new #syntax directive:
+
+    # syntax = registry/user/repo:tag
+
+
